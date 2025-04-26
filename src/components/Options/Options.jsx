@@ -1,7 +1,7 @@
 import css from "./Options.module.css";
 import clsx from "clsx";
 
-export default function Options({ updateFeedback, resetFeedback }) {
+export default function Options({ updateFeedback, resetFeedback, totalFeedback }) {
   return (
     <div className={css.optionsContainer}>
       <button
@@ -28,12 +28,14 @@ export default function Options({ updateFeedback, resetFeedback }) {
       >
         ❌Bad
       </button>
-      <button
-        onClick={resetFeedback}
-        className={clsx(css.resetBtn, css.basicBtn)}
-      >
-        🔄Reset
-      </button>
+      {totalFeedback && (
+        <button
+          onClick={resetFeedback}
+          className={clsx(css.resetBtn, css.basicBtn)}
+        >
+          🔄Reset
+        </button>
+      )}
     </div>
   );
 }

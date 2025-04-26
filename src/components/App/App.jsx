@@ -7,10 +7,12 @@ import Feedback from "../Feedback/Feedback.jsx";
 import { useEffect, useState } from "react";
 
 export default function App() {
-  const [reviewType, setReviewType] = useState({
-    good: 0,
-    neutral: 0,
-    bad: 0,
+  const [reviewType, setReviewType] = useState(() => {
+    const savedData = localStorage.getItem("reviewType");
+    if (savedData !== null) {
+      return JSON.parse(savedData);
+    }
+    return requiredData;
   });
 
   const updateFeedback = (feedbackType) => {
@@ -21,12 +23,18 @@ export default function App() {
   };
 
   const resetFeedback = () => {
-    setReviewType({ good: 0, neutral: 0, bad: 0 });
+    setReviewType(requiredData);
+  };
+
+  const requiredData = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
   };
 
   const totalFeedback = reviewType.good + reviewType.neutral + reviewType.bad;
 
-  const positiveFeedback = reviewType.good + reviewType.neutral;
+  const positiveFeadback = Math.round((reviewType.good / totalFeedback) * 100);
 
   useEffect(() => {
     localStorage.setItem("reviewType", JSON.stringify(reviewType));
@@ -35,14 +43,18 @@ export default function App() {
   return (
     <div className={css.app}>
       <Description />
-      <Options updateFeedback={updateFeedback} resetFeedback={resetFeedback} />
+      <Options
+        updateFeedback={updateFeedback}
+        resetFeedback={resetFeedback}
+        totalFeedback={totalFeedback}
+      />
       {!totalFeedback && <Notification />}
       {totalFeedback > 0 && (
         <Feedback
           count={reviewType}
           updateFeedback={updateFeedback}
           total={totalFeedback}
-          positiveFeedback={positiveFeedback}
+          positiveFeadback={positiveFeadback}
         />
       )}
     </div>
